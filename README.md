@@ -24,6 +24,18 @@ Based on FPGA64 by Peter Wendrich with heavy later modifications by different pe
 - Real-time clock
 - Drive OSD showing mount status, read/write activity and current track
 - Complete C1530 Datasette implementation with on screen Counter and shortcuts keys
+- Optional WiC64 on the user port (needs a small service on MiSTer Linux, see below)
+
+## WiC64
+The core can present a [WiC64](https://wic64.net) on the user port, without extra hardware.
+A small bridge (`rtl/wic64_bridge.sv`) passes the user port handshake over the HPS UART
+(`/dev/ttyS1`, 1 562 500 baud) to a service on MiSTer Linux, which answers the WiC64
+commands (firmware 2.4.4 command set) using the MiSTer's network.
+
+- OSD: *Hardware > WiC64 (Userport) = Enabled*, *UART Mode = None*.
+- The service (`wic64d.py`, Python 3) with setup scripts is available from
+  https://github.com/Retro-Modern/WiC64-Ultimate/tree/main/mister.
+- With the option disabled (default) the core behaves exactly as before.
 
 ## Installation
 Copy the *.rbf to the root of the SD card. Copy disks/carts to C64 folder.

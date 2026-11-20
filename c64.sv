@@ -119,6 +119,7 @@ localparam CONF_STR = {
 	"P2-;",
 	"P2O[25],External IEC,Disabled,Enabled;",
 	"P2O[43],Expansion,Joysticks,RS232;",
+	"P2O[99],WiC64 (Userport),Disabled,Enabled;",
 	"P2O[51],RS232 mode,UP9600,VIC-1011;",
 	"P2O[33],RS232 connection,Internal,External;",
 	"P2O[36],Real-Time Clock,Auto,Disabled;",
@@ -1708,8 +1709,14 @@ always_comb begin
 	USER_OUT[0] = 1;
 	USER_OUT[1] = 1;
 
+	// WiC64: user port bridge to the wic64d service on MiSTer Linux (ttyS1)
+	if(wic64_on) begin
+		pb_i      = wic64_pb_i;
+		flag2_n_i = wic64_flag2_n;
+		UART_TXD  = wic64_tx;
+	end
 	// Parallel Cable: Auto uses the idle timer; On keeps the cable connected.
-	if(par_on | (disk_parport & disk_access)) begin
+	else if(par_on | (disk_parport & disk_access)) begin
 		drive_par_i = pb_o;
 		drive_stb_i = pc2_n_o;
 		pb_i        = drive_par_o;
@@ -1742,6 +1749,27 @@ always_comb begin
 end
 
 wire uart_int = ~status[33];
+
+wire       wic64_on = status[99];
+wire [7:0] wic64_pb_i;
+wire       wic64_flag2_n, wic64_tx;
+
+wic64_bridge wic64_bridge
+(
+	.clk(clk_sys),
+	.reset(~reset_n | ~wic64_on),
+	.baud_inc(ntsc ? 24'd800996 : 24'd831465),   // 1 562 500 Baud
+
+	.pb_o(pb_o),
+	.pb_i(wic64_pb_i),
+	.pa2_o(pa2_o),
+	.pc2_n(pc2_n_o),
+	.flag2_n(wic64_flag2_n),
+
+	.uart_rx(UART_RXD),
+	.uart_tx(wic64_tx),
+	.uart_flush(UART_DSR)
+);
 
 reg uart_rxd, uart_dsr, uart_cts;
 always @(posedge clk_sys) begin
