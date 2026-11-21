@@ -1,5 +1,15 @@
 # C64 for [MiSTer](https://github.com/MiSTer-devel/Main_MiSTer/wiki)
 
+> **This is the WiC64 fork by [Retro-Modern](https://retro-modern.net).** It is the official
+> [MiSTer-devel/C64_MiSTer](https://github.com/MiSTer-devel/C64_MiSTer) core plus an optional
+> WiC64 on the user port (see [WiC64](#wic64) below). The WiC64 will not go upstream
+> ([#238](https://github.com/MiSTer-devel/C64_MiSTer/issues/238)), so this fork follows the
+> official core and is rebased when it changes.
+>
+> Ready-to-use package (core, service, setup scripts) and updates via Downloader / update_all:
+> [WiC64-Ultimate/mister](https://github.com/Retro-Modern/WiC64-Ultimate/tree/main/mister).
+> Questions and bug reports go to Retro-Modern, not to the MiSTer or WiC64 teams.
+
 Based on FPGA64 by Peter Wendrich with heavy later modifications by different people.
 
 ## Features
